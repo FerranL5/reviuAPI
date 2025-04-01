@@ -1,0 +1,6 @@
+@reviuAPI_HostAddress = http://localhost:5189
+
+GET {{reviuAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
