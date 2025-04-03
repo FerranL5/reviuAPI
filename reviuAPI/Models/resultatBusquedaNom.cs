@@ -6,10 +6,8 @@
       public bool? adult { get; set; }
       public string? backdrop_path { get; set; }
       public int id { get; set; }
-      public string? title { get; set; }
-      public string? original_title {  get; set; }
-      public string? name { get; set; }
-      public string? original_name { get; set; }
+      public string title { get; set; }
+      public string original_title {  get; set; }
       public string overview {  get; set; }
       public string poster_path { get; set; }
       public string media_type { get; set; } // movie o tv
