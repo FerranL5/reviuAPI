@@ -84,8 +84,10 @@ namespace reviuAPI.Controllers
             Usuari usuari = new Usuari();
             usuari.NomUsuari = authentification.FkUsari.NomUsuari;
             _context.Usuaris.Add(usuari);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
 
+            authentification.FkUsariId = usuari.UsuariId;
+            authentification.FkUsari = usuari;
             _context.Authentifications.Add(authentification);
             await _context.SaveChangesAsync();
 
