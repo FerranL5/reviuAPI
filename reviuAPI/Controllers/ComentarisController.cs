@@ -51,14 +51,31 @@ namespace reviuAPI.Controllers
             List<Comentari> comentari = null;
             if (type == 'v')
             {
-                comentari = _context.Comentaris.Where(x => x.FkValoracioId == id).ToList();
+                comentari = _context.Comentaris.Where(x => x.FkValoracioId == id && x.EsResposta == 0).ToList();
 
             } else if (type == 'c')
             {
-                comentari = _context.Comentaris.Where(x => x.FkContingutId == id).ToList();
+                comentari = _context.Comentaris.Where(x => x.FkContingutId == id && x.EsResposta == 0).ToList();
 
             }
             
+
+            if (comentari == null)
+            {
+                return NotFound();
+            }
+
+            return comentari;
+        }
+
+        // GET: api/Comentaris/5
+        [Route("api/Respostes/{id}")]
+        [HttpGet]
+        public async Task<ActionResult<List<Comentari>>> GetRespostas(int id)
+        {
+            List<Comentari> comentari = null;
+           
+            comentari = _context.Comentaris.Where(x => x.EsResposta == id).ToList();       
 
             if (comentari == null)
             {
@@ -72,7 +89,7 @@ namespace reviuAPI.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Route("api/Comentaris/{id}")]
         [HttpPut]
-        public async Task<IActionResult> PutComentari(int id, Comentari comentari)
+        public async Task<IActionResult> PutComentari(int id, [FromBody]Comentari comentari)
         {
             if (id != comentari.ComentariId)
             {
@@ -104,7 +121,7 @@ namespace reviuAPI.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Route("api/Comentaris")]
         [HttpPost]
-        public async Task<ActionResult<Comentari>> PostComentari(Comentari comentari)
+        public async Task<ActionResult<Comentari>> PostComentari([FromBody]Comentari comentari)
         {
             _context.Comentaris.Add(comentari);
             await _context.SaveChangesAsync();

@@ -149,6 +149,45 @@ namespace reviuAPI.Models
                 return llancaments;
             }
         }
+        public resultatsLlancaments GetProximsLlancaments()
+        {
+            resultatsLlancaments llancaments = new resultatsLlancaments();
+
+            DateTime dateTimeMin = DateTime.Now.AddDays(1);
+            DateTime dateTimeMax = DateTime.Now.AddMonths(1);
+
+            try
+            {
+                string url = "discover/movie?include_adult=false&include_video=false&language=en-US&page=1&primary_release_date.gte=" + dateTimeMin.ToString().Substring(0, 10) + "&primary_release_date.lte=" + dateTimeMax.ToString().Substring(0, 10) + "&sort_by=popularity.desc";
+                llancaments = (resultatsLlancaments)MakeRequest(url, typeof(resultatsLlancaments)).Result;
+
+                return llancaments;
+            }
+            catch
+            {
+                return llancaments;
+            }
+        }
+
+        public proveidors GetProveidors(int id, string type)
+        {
+            proveidors proveidors = new proveidors();
+
+            try
+            {
+
+                string url = type + "/" + id + "/watch/providers";
+
+                proveidors = (proveidors)MakeRequest(url, typeof(proveidors)).Result;
+
+                return proveidors;
+            }
+            catch
+            {
+                return proveidors;
+            }
+
+        }
 
     }
 }

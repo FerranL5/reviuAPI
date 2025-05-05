@@ -81,6 +81,7 @@ namespace reviuAPI.Controllers
                     con.TmdbId = id;
                     con.Valoracio = 0;
                     con.tipus = type;
+                    con.poster_path = contingut.poster_path;
 
                     _context.Continguts.Add(con);
                     _context.SaveChanges();
@@ -142,6 +143,50 @@ namespace reviuAPI.Controllers
             }
 
             return contingut;
+        }
+
+        [Route("api/proximsLlancaments/")]
+        [HttpGet]
+        public async Task<ActionResult<resultatsLlancaments>> GetProximsLlancaments()
+        {
+            var contingut = cTMDB.GetProximsLlancaments();
+
+            if (contingut == null)
+            {
+                return NotFound();
+            }
+
+            return contingut;
+        }
+
+        // GET: api/Continguts/5
+        [Route("api/ContingutsDBTMDB/{id:int}/{type}")]
+        [HttpGet]
+        public async Task<ActionResult<Contingut>> GetContingutDBTMDB(int id, string type)
+        {
+            var contingut = _context.Continguts.Where(x=> x.TmdbId == id && x.tipus == type).First();
+
+            if (contingut == null)
+            {
+                return NotFound();
+            }
+
+            return contingut;
+        }
+
+        //GET: api/Proveidors/1/tv
+        [Route("api/Proveidors/{id}/{type}")]
+        [HttpGet]
+        public async Task<ActionResult<proveidors>> GetProveidors(int id, string type)
+        {
+            var proveidors = cTMDB.GetProveidors(id, type);
+
+            if(proveidors == null)
+            {
+                return NotFound();
+            }
+
+            return proveidors;
         }
 
         // PUT: api/Continguts/5

@@ -29,16 +29,16 @@ namespace reviuAPI.Controllers
         }
 
         // GET: api/Seguiments/5
-        [Route("api/Seguiments/{id}")]
+        [Route("api/Seguiments/{idEsSeguit}&{idSegueix}")]
         [HttpGet]
-        public async Task<ActionResult<Seguiment>> GetSeguiment(int id)
+        public async Task<ActionResult<Seguiment?>> GetSeguiment(int idEsSeguit, int idSegueix)
         {
-            var seguiment = await _context.Seguiments.FindAsync(id);
+            var seguiment = _context.Seguiments.Where(x=>x.EsSeguit == idEsSeguit && x.Segueix == idSegueix).FirstOrDefault();
 
-            if (seguiment == null)
-            {
-                return NotFound();
-            }
+            //if (seguiment == null)
+            //{
+            //    return NotFound();
+            //}
 
             return seguiment;
         }
@@ -79,7 +79,7 @@ namespace reviuAPI.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Route("api/Seguiments")]
         [HttpPost]
-        public async Task<ActionResult<Seguiment>> PostSeguiment(Seguiment seguiment)
+        public async Task<ActionResult<Seguiment>> PostSeguiment([FromBody] Seguiment seguiment)
         {
             _context.Seguiments.Add(seguiment);
 
@@ -99,15 +99,25 @@ namespace reviuAPI.Controllers
         }
 
         // DELETE: api/Seguiments/5
-        [Route("api/Seguiments/{id}")]
+        [Route("api/Seguiments/{idEsSeguit}&{idSegueix}")]
         [HttpDelete]
-        public async Task<IActionResult> DeleteSeguiment(int id)
+        public async Task<IActionResult> DeleteSeguiment(int idEsSeguit, int idSegueix)
         {
-            var seguiment = await _context.Seguiments.FindAsync(id);
+            var seguiment = _context.Seguiments.Where(x=>x.EsSeguit == idEsSeguit && x.Segueix == idSegueix).FirstOrDefault();
+
             if (seguiment == null)
             {
                 return NotFound();
             }
+
+            Usuari uSegueix = new Usuari();
+            Usuari uEsSeguit = new Usuari();
+
+            uSegueix = _context.Usuaris.Where(x => x.UsuariId == seguiment.Segueix).First();
+            uEsSeguit = _context.Usuaris.Where(x => x.UsuariId == seguiment.EsSeguit).First();
+
+            uSegueix.Seguits--;
+            uEsSeguit.Seguidors--;
 
             _context.Seguiments.Remove(seguiment);
             await _context.SaveChangesAsync();

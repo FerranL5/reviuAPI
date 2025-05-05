@@ -20,10 +20,7 @@ namespace reviuAPI.Controllers
             _context = context;
         }
 
-        public UsuarisController()
-        {
-           
-        }
+       
 
         // GET: api/Usuaris
         [Route("api/Usuaris")]
@@ -34,16 +31,47 @@ namespace reviuAPI.Controllers
         }
 
         // GET: api/Usuaris/5
-        [Route("api/Usuaris/{id}")]
+        [Route("api/Usuaris/{id:int}")]
         [HttpGet]
         public async Task<ActionResult<Usuari>> GetUsuari(int id)
         {
             var usuari = await _context.Usuaris.FindAsync(id);
+            var lliste = _context.Llistes.Where(x => x.FkUsuariId == id).ToList();
 
             if (usuari == null)
             {
                 return NotFound();
             }
+
+            foreach (Lliste ll in lliste)
+            {
+                ll.CuntigutLlistes = _context.CuntigutLlistes.Where(x => x.FkLlistaId == ll.LlistaId).ToList();
+            }
+
+            foreach (Lliste ll in lliste)
+            {
+                foreach (CuntigutLliste cl in ll.CuntigutLlistes)
+                {
+                    cl.FkContingut = _context.Continguts.Where(x => x.ContingutId == cl.FkContingutId).First();
+                }
+            }
+
+            usuari.Llistes = lliste;
+
+            return usuari;
+        }
+
+        // GET: api/Usuaris/u
+        [Route("api/Usuaris/{nom}")]
+        [HttpGet]
+        public async Task<ActionResult<List<Usuari>>> GetUsuari(string nom)
+        {
+            var usuari = _context.Usuaris.Where(x=> x.NomUsuari.Contains(nom)).ToList();
+
+            if (usuari == null)
+            {
+                return NotFound();
+            }         
 
             return usuari;
         }
@@ -52,7 +80,7 @@ namespace reviuAPI.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Route("api/Usuaris/{id}")]
         [HttpPut]
-        public async Task<IActionResult> PutUsuari(int id, Usuari usuari)
+        public async Task<IActionResult> PutUsuari(int id, [FromBody]Usuari usuari)
         {
             if (id != usuari.UsuariId)
             {
@@ -97,13 +125,13 @@ namespace reviuAPI.Controllers
             {
 
                 Lliste ll1 = new Lliste();
-                ll1.NomLlista = "Series a veure";
+                ll1.NomLlista = "Continguts a veure";
                 ll1.FotoLlista = null;
                 ll1.EsPublica = true;
                 ll1.FkUsuariId = usuari.UsuariId;
 
                 Lliste ll2 = new Lliste();
-                ll2.NomLlista = "Series vistes";
+                ll2.NomLlista = "Continguts vistos";
                 ll2.FotoLlista = null;
                 ll2.EsPublica = true;
                 ll2.FkUsuariId = usuari.UsuariId;
@@ -120,16 +148,16 @@ namespace reviuAPI.Controllers
                 if (uCreat != null)
                 {
                     Lliste ll1 = new Lliste();
-                    ll1.NomLlista = "Series a veure";
+                    ll1.NomLlista = "Continguts a veure";
                     ll1.FotoLlista = null;
                     ll1.EsPublica = true;
-                    ll1.FkUsuariId = uCreat.UsuariId;
+                    ll1.FkUsuariId = usuari.UsuariId;
 
                     Lliste ll2 = new Lliste();
-                    ll2.NomLlista = "Series vistes";
+                    ll2.NomLlista = "Continguts vistos";
                     ll2.FotoLlista = null;
                     ll2.EsPublica = true;
-                    ll2.FkUsuariId = uCreat.UsuariId;
+                    ll2.FkUsuariId = usuari.UsuariId;
 
                     _context.Llistes.Add(ll1);
                     _context.Llistes.Add(ll2);

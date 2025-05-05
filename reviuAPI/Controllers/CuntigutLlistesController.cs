@@ -79,8 +79,16 @@ namespace reviuAPI.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Route("api/CuntigutLlistes")]
         [HttpPost]
-        public async Task<ActionResult<CuntigutLliste>> PostCuntigutLliste(CuntigutLliste cuntigutLliste)
+        public async Task<ActionResult<CuntigutLliste>> PostCuntigutLliste([FromBody] CuntigutLliste cuntigutLliste)
         {
+            CuntigutLliste? c = _context.CuntigutLlistes.Where(x => x.FkContingutId == cuntigutLliste.FkContingutId && x.FkLlistaId == cuntigutLliste.FkLlistaId).FirstOrDefault();
+
+            if (c != null)
+            {
+                c.ContingutLlistaId = 0;
+                return c;
+            }
+
             _context.CuntigutLlistes.Add(cuntigutLliste);
             await _context.SaveChangesAsync();
 

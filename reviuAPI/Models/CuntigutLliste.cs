@@ -12,6 +12,7 @@ public partial class CuntigutLliste
 
     public int FkContingutId { get; set; }
 
+    
     public virtual Contingut FkContingut { get; set; } = null!;
 
     [JsonIgnore]

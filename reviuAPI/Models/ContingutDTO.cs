@@ -92,7 +92,7 @@
             this.vote_average = movie.vote_average;
             this.vote_count = movie.vote_count;
             this.episode_run_time = null;
-            this.first_air_date = null;
+            this.first_air_date = movie.release_date;
             this.in_production = null;
             this.languages = null;
             this.last_air_date = null;

@@ -13,7 +13,7 @@
         public string overview { get; set; }
         public string id { get; set; }
         public string production_code { get; set; }
-        public int runtime {  get; set; }
+        public int? runtime {  get; set; }
         public int season_number { get; set; }
         public string still_path { get; set; }
         public float vote_average { get; set; }

@@ -14,7 +14,7 @@ namespace reviuAPI.Controllers
     public class LlistesController : ControllerBase
     {
         private readonly ReviuContext _context;
-
+        consumidorTMDB cTMDB = new consumidorTMDB();
         public LlistesController(ReviuContext context)
         {
             _context = context;
@@ -45,7 +45,7 @@ namespace reviuAPI.Controllers
             return lliste;
         }
 
-        // GET: api/Llistes/5
+        // GET: api/LlistesUsuari/5
         [Route("api/LlistesUsuari/{id}")]
         [HttpGet]
         public async Task<ActionResult<List<Lliste>>> GetLlistesUsuari(int id)
@@ -55,6 +55,19 @@ namespace reviuAPI.Controllers
             if (lliste == null)
             {
                 return NotFound();
+            }
+
+            foreach (Lliste ll in lliste)
+            {
+                ll.CuntigutLlistes = _context.CuntigutLlistes.Where(x => x.FkLlistaId == ll.LlistaId).ToList();
+            }
+
+            foreach (Lliste ll in lliste)
+            {
+                foreach (CuntigutLliste cl in ll.CuntigutLlistes)
+                {
+                    cl.FkContingut = _context.Continguts.Where(x => x.ContingutId == cl.FkContingutId).First();
+                }
             }
 
             return lliste;
@@ -96,7 +109,7 @@ namespace reviuAPI.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Route("api/Llistes")]
         [HttpPost]
-        public async Task<ActionResult<Lliste>> PostLliste(Lliste lliste)
+        public async Task<ActionResult<Lliste>> PostLliste([FromBody] Lliste lliste)
         {
             _context.Llistes.Add(lliste);
             await _context.SaveChangesAsync();
@@ -114,6 +127,9 @@ namespace reviuAPI.Controllers
             {
                 return NotFound();
             }
+
+            var contingutLliste = _context.CuntigutLlistes.Where(x => x.FkLlistaId == id).ToList();
+            _context.CuntigutLlistes.RemoveRange(contingutLliste);
 
             _context.Llistes.Remove(lliste);
             await _context.SaveChangesAsync();

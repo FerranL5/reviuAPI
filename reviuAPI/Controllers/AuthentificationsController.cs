@@ -29,7 +29,7 @@ namespace reviuAPI.Controllers
         }
 
         // GET: api/Authentifications/5
-        [Route("api/Authentifications/{id}")]
+        [Route("api/Authentifications/{id:int}")]
         [HttpGet]
         public async Task<ActionResult<Authentification>> GetAuthentification(int id)
         {
@@ -41,6 +41,23 @@ namespace reviuAPI.Controllers
             }
 
             return authentification;
+        }
+
+        // GET: api/Authentifications/5
+        [Route("api/Authentifications/{correu}&{contrasenya}")]
+        [HttpGet]
+        public async Task<ActionResult<Usuari>> GetAuthentificationUsuari(string correu, string contrasenya)
+        {
+            var authentification = _context.Authentifications.Where(x=> x.Correu == correu).FirstOrDefault();
+
+            if (authentification == null || authentification.Contrasenya != contrasenya)
+            {
+                return NotFound();
+            }
+
+            Usuari u = _context.Usuaris.Where(x=> x.UsuariId == authentification.FkUsariId).First();
+
+            return u;
         }
 
         // PUT: api/Authentifications/5
@@ -79,7 +96,7 @@ namespace reviuAPI.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Route("api/Authentifications")]
         [HttpPost]
-        public async Task<ActionResult<Authentification>> PostAuthentification(Authentification authentification)
+        public async Task<ActionResult<Authentification>> PostAuthentification([FromBody]Authentification authentification)
         {
             Usuari usuari = new Usuari();
             usuari.NomUsuari = authentification.FkUsari.NomUsuari;
