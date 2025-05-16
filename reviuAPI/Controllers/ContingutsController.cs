@@ -174,6 +174,21 @@ namespace reviuAPI.Controllers
             return contingut;
         }
 
+        //GET: api/Popular
+        [Route("api/Popular")]
+        [HttpGet]
+        public async Task<ActionResult<resultatsRecomanacions>> GetPopular()
+        {
+            var popular = cTMDB.GetPopular();
+
+            if (popular == null)
+            {
+                return NotFound();
+            }
+
+            return popular;
+        }
+
         //GET: api/Proveidors/1/tv
         [Route("api/Proveidors/{id}/{type}")]
         [HttpGet]

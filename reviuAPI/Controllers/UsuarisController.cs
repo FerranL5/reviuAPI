@@ -14,10 +14,12 @@ namespace reviuAPI.Controllers
     public class UsuarisController : ControllerBase
     {
         private readonly ReviuContext _context;
+        private readonly IWebHostEnvironment _env;
 
-        public UsuarisController(ReviuContext context)
+        public UsuarisController(ReviuContext context, IWebHostEnvironment env)
         {
             _context = context;
+            _env = env;
         }
 
        
@@ -75,6 +77,21 @@ namespace reviuAPI.Controllers
 
             return usuari;
         }
+
+        [Route("api/Usuaris/fotoUsuari/{id}")]
+        [HttpGet]
+        public async Task<IActionResult> GetImageUrl(int id)
+        {
+            var image = await _context.Usuaris
+                .Where(x => x.UsuariId == id)
+                .FirstOrDefaultAsync();
+
+            if (image == null)
+                return NotFound();
+
+            return Ok(new { imageUrl = image.FotoUsuari });
+        }
+
 
         // PUT: api/Usuaris/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -169,6 +186,41 @@ namespace reviuAPI.Controllers
                 await _context.SaveChangesAsync();
 
                 return await GetUsuari(usuari.UsuariId);
+        }
+
+        [Route("api/Usuaris/uploadImage")]
+        [HttpPost]
+        public async Task<ActionResult<foto>> UploadImage(IFormFile image, [FromForm] int userId)
+        {
+            if (image == null || image.Length == 0)
+                return BadRequest("Imagen no válida.");
+
+            // Ruta donde guardar
+            var uploadsFolder = Path.Combine(_env.WebRootPath, "uploads");
+            if (!Directory.Exists(uploadsFolder))
+                Directory.CreateDirectory(uploadsFolder);
+
+            // Nombre único para la imagen
+            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
+            var filePath = Path.Combine(uploadsFolder, fileName);
+
+            // Guardar en disco
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await image.CopyToAsync(stream);
+
+            }
+
+            // Guardar ruta en base de datos
+            var imageUrl = "http://172.16.24.149:45455" + $"/uploads/{fileName}";
+            var usuari = _context.Usuaris.Where(x => x.UsuariId == userId).First();
+            usuari.FotoUsuari = imageUrl;
+            await _context.SaveChangesAsync();
+
+            foto f = new foto();
+            f.imageUrl = imageUrl;
+
+            return f;
         }
 
         // DELETE: api/Usuaris/5

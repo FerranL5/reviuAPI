@@ -57,9 +57,29 @@ namespace reviuAPI.Controllers
             return valoracions;
         }
 
+        // GET: api/ValoraciosContingut/5
+        [Route("api/ValoraciosContingut/{id}")]
+        [HttpGet]
+        public async Task<ActionResult<List<Valoracio>>> GetValoraciosContingut(int id)
+        {
+            var valoracions = _context.Valoracios.Where(x => x.FkContingutId == id).ToList();
+
+            if (valoracions == null)
+            {
+                return NotFound();
+            }
+
+            foreach (Valoracio v in valoracions)
+            {
+                v.FkContingut = _context.Continguts.Where(x => x.ContingutId == v.FkContingutId).First();
+            }
+
+            return valoracions;
+        }
+
         [Route("api/Valoracios/{id}/{data}")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Valoracio>>> GetValoracioNoves(int id, string data)
+        public async Task<ActionResult<IEnumerable<Valoracio>>?> GetValoracioNoves(int id, string data)
         {
             var seguits = _context.Seguiments.Where(x => x.Segueix == id).ToList();
 
@@ -74,7 +94,7 @@ namespace reviuAPI.Controllers
 
             if (valoracions.Count <= 0)
             {
-                return NotFound();
+                return null;
             }
 
             foreach (Valoracio v in valoracions)
@@ -124,7 +144,15 @@ namespace reviuAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Valoracio>> PostValoracio([FromBody]Valoracio valoracio)
         {
-            _context.Valoracios.Add(valoracio);
+            var valo = _context.Valoracios.Where(x => x.FkUsuariId == valoracio.FkUsuariId && x.FkContingutId == valoracio.FkContingutId).FirstOrDefault();
+            if(valo == null)
+            {
+                _context.Valoracios.Add(valoracio);
+            } else
+            {
+                valo.Puntuacio = valoracio.Puntuacio;
+            }
+            
 
             _context.SaveChanges();
 

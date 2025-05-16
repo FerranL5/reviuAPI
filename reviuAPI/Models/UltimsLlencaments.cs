@@ -11,6 +11,7 @@
           public string original_title { get; set; }
           public string overview { get; set; }
           public float popularity { get; set; }
+          public string? media_type { get; set; }
           public string poster_path { get; set; }
           public string release_date { get; set; }
           public string title { get; set; }

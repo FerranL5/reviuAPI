@@ -28,7 +28,7 @@
         public List<string>? languages { get; set; }
         public string? last_air_date { get; set; }
         public string? name { get; set; }
-        public string? next_episode_to_air { get; set; }
+        public next_episode_to_air? next_episode_to_air { get; set; }
         public int? number_of_episodes { get; set; }
         public int? number_of_seasons { get; set; }
         public string? original_name { get; set; }

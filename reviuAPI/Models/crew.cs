@@ -1,8 +1,11 @@
-﻿namespace reviuAPI.Models
+﻿using System.Text.Json.Serialization;
+
+namespace reviuAPI.Models
 {
     public class crew
     {
 
+        [JsonIgnore]
         public string department {  get; set; }
         public string job {  get; set; }
         public string credit_id { get; set; }

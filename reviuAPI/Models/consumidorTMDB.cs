@@ -169,6 +169,23 @@ namespace reviuAPI.Models
             }
         }
 
+        public resultatsRecomanacions GetPopular()
+        {
+            resultatsRecomanacions popular = new resultatsRecomanacions();
+
+            try
+            {
+                string url = "trending/all/day?language=en";
+                popular = (resultatsRecomanacions)MakeRequest(url, typeof(resultatsRecomanacions)).Result;
+
+                return popular;
+            }
+            catch
+            {
+                return popular;
+            }
+        }
+
         public proveidors GetProveidors(int id, string type)
         {
             proveidors proveidors = new proveidors();

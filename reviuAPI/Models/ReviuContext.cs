@@ -168,7 +168,7 @@ public partial class ReviuContext : DbContext
 
             entity.Property(e => e.UsuariId).HasColumnName("UsuariID");
             entity.Property(e => e.FkContingutId).HasColumnName("fk_ContingutID");
-            entity.Property(e => e.FotoUsuari).HasColumnType("image");
+            entity.Property(e => e.FotoUsuari).HasColumnName("FotoUsuari");
             entity.Property(e => e.NomUsuari).HasMaxLength(50);
 
             entity.HasOne(d => d.FkContingut).WithMany(p => p.Usuaris)

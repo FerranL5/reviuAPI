@@ -10,7 +10,7 @@ public partial class Usuari
 
     public string NomUsuari { get; set; } = null!;
 
-    public byte[]? FotoUsuari { get; set; }
+    public string? FotoUsuari { get; set; }
 
     public int Seguidors { get; set; }
 
@@ -23,7 +23,7 @@ public partial class Usuari
 
     public virtual ICollection<Comentari>? Comentaris { get; set; } = new List<Comentari>();
 
-    [JsonIgnore]
+    //[JsonIgnore]
     public virtual Contingut? FkContingut { get; set; }
 
     public virtual ICollection<Lliste>? Llistes { get; set; } = new List<Lliste>();
